@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI PowerPoint Generator - Chat Interface</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- PptxGenJS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    
+</head>
+<body>
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Left Sidebar - Presentation Preview -->
+            <div class="col-md-4 col-lg-3 sidebar-left">
+                <div class="sidebar-header">
+                    <h5><i class="bi bi-file-earmark-slides"></i> Presentation</h5>
+                </div>
+                <div class="slides-preview" id="slidesPreview">
+                    <div class="no-slides">
+                        <i class="bi bi-file-earmark-plus"></i>
+                        <p>No slides yet</p>
+                        <small>Start chatting to create your presentation</small>
+                    </div>
+                </div>
+                <div class="sidebar-actions">
+                    <button class="btn btn-primary w-100 mb-2" id="generatePptBtn" disabled>
+                        <i class="bi bi-download"></i> Download PPT
+                    </button>
+                    <button class="btn btn-outline-secondary w-100" id="clearSlidesBtn" disabled>
+                        <i class="bi bi-trash"></i> Clear All
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Chat Area -->
+            <div class="col-md-8 col-lg-9 main-content">
+                <div class="chat-header">
+                    <div>
+                        <h4><i class="bi bi-robot"></i> AI PowerPoint Assistant</h4>
+                        <small class="text-muted">Powered by Gemini AI</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-outline-danger btn-sm" id="clearChatBtn">
+                            <i class="bi bi-trash"></i> Clear Chat
+                        </button>
+                        <!-- Profile Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('history') }}">
+                                        <i class="bi bi-clock-history"></i> Presentation History
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="ai-avatar">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <h5>Hey {{ username }}! 👋</h5>
+                            <p>I’m <strong>SpectraAI</strong> — your creative slide partner 🌈</p>
+                            <p>Share your topic, and I’ll craft a stunning, AI-powered presentation filled with smart ideas and visuals that shine.</p>
+                            <p class="text-muted"><em>“Let your imagination glow with Spectra.”</em></p>
+
+                            <p><strong>Try these commands:</strong></p>
+                            <ul>
+                                <li>"Create 5 slides about Artificial Intelligence with images"</li>
+                                <li>"Make a presentation about Space Exploration with photos"</li>
+                                <li>"Generate slides about Healthy Eating with relevant images"</li>
+                                <li>"Create a travel presentation about Paris"</li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <div class="input-group">
+                        <textarea 
+                            class="form-control" 
+                            id="userInput" 
+                            placeholder="Type your message here... (e.g., Create 5 slides about Climate Change)"
+                            rows="1"
+                        ></textarea>
+                        <button class="btn btn-primary" id="sendBtn" type="button">
+                            <i class="bi bi-send-fill"></i> Send
+                        </button>
+                    </div>
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> Press Enter to send, Shift+Enter for new line
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Generating slides...</p>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

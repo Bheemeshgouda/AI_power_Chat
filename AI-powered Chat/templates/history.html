@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Presentations - AI PowerPoint Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+   
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-robot"></i> AI PowerPoint
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    <i class="bi bi-person-circle"></i> {{ username }}
+                </span>
+                <a class="nav-link" href="{{ url_for('index') }}">
+                    <i class="bi bi-house"></i> Home
+                </a>
+                <a class="nav-link active" href="{{ url_for('history') }}">
+                    <i class="bi bi-clock-history"></i> History
+                </a>
+                <a class="nav-link" href="{{ url_for('logout') }}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2><i class="bi bi-clock-history"></i> My Presentations</h2>
+                <p class="text-muted">View and manage your saved presentations</p>
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            {% if presentations %}
+                {% for presentation in presentations %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card presentation-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-file-earmark-slides"></i> {{ presentation.title }}
+                            </h5>
+                            <p class="card-text text-muted">
+                                <small>
+                                    <i class="bi bi-calendar"></i> Created: {{ presentation.created_at.strftime('%Y-%m-%d %H:%M') }}<br>
+                                    <i class="bi bi-pencil"></i> Updated: {{ presentation.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            </p>
+                            <div class="btn-group w-100" role="group">
+                                <button class="btn btn-primary btn-sm" onclick="loadPresentation({{ presentation.id }})">
+                                    <i class="bi bi-box-arrow-in-down"></i> Load
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deletePresentation({{ presentation.id }})">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i>
+                        <p class="mb-0">No presentations yet. <a href="{{ url_for('index') }}">Create your first one!</a></p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadPresentation(id) {
+            window.location.href = `{{ url_for('index') }}?load=${id}`;
+        }
+
+        async function deletePresentation(id) {
+            if (!confirm('Are you sure you want to delete this presentation?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/delete-presentation/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to delete presentation');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
+    </script>
+</body>
+</html>
